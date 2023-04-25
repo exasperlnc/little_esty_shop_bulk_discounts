@@ -5,6 +5,6 @@ class BulkDiscount < ApplicationRecord
   validates :quantity_threshold, presence: true
 
   def discount_calculator
-    percentage_discount.to_f / 100
+    1 - (percentage_discount.to_f / 100)
   end
 end
