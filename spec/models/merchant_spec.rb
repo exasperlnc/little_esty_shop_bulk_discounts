@@ -164,6 +164,7 @@ describe Merchant do
     it "best_day" do
       expect(@merchant1.best_day).to eq(@invoice_8.created_at.to_date)
     end
+
     describe "#highest_qualifying_discount" do
       it 'highest_qualifying_discount' do
         expect(@merchant1.highest_qualifying_discount(10)).to eq(@bd_4)
