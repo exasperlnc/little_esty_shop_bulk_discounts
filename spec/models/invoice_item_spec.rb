@@ -40,14 +40,11 @@ RSpec.describe InvoiceItem, type: :model do
     it 'incomplete_invoices' do
       expect(InvoiceItem.incomplete_invoices).to eq([@i1, @i3])
     end
-
   end
   
   describe "#instance methods" do
-    it 'add_bulk_discount' do
-      @ii_1.add_bulk_discount(@bd_1.id)
-
-      expect(@ii_1.bulk_discount_id).to eq(@bd_1.id)
+    it '#top_discount' do
+      expect(@ii_1.top_discount).to eq(@bd_3)
     end
   end
 end

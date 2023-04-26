@@ -16,6 +16,15 @@ class InvoiceItem < ApplicationRecord
   end
 
   def add_bulk_discount(bulk_discount_id)
-    self.update_columns(bulk_discount_id: bulk_discount_id)
+    update_columns(bulk_discount_id: bulk_discount_id)
+  end
+
+  def top_discount
+    item
+    .merchant
+    .bulk_discounts
+    .where("quantity_threshold <= '#{self.quantity}'")
+    .order('percentage_discount DESC')
+    .first
   end
 end
