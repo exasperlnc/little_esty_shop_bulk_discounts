@@ -15,10 +15,6 @@ class InvoiceItem < ApplicationRecord
     Invoice.order(created_at: :asc).find(invoice_ids)
   end
 
-  def add_bulk_discount(bulk_discount_id)
-    update_columns(bulk_discount_id: bulk_discount_id)
-  end
-
   def top_discount
     item
     .merchant
