@@ -100,8 +100,10 @@ RSpec.describe 'invoices show' do
      end
   end
 
-  xit 'has the total discounted revenue from this invoice' do
+  it 'has the total discounted revenue from this invoice' do
     visit merchant_invoice_path(@merchant1, @invoice_1)
+
+    expect(page).to have_content(@invoice_1.total_discounted_revenue)
   end
 
 end
