@@ -17,14 +17,17 @@ class Invoice < ApplicationRecord
   def total_discounted_revenue
     revenue = 0
     invoice_items.each do |ii|
-      bd = ii.item.merchant.highest_qualifying_discount(ii.quantity)
+      bd = ii.top_discount
       if bd.nil?
         revenue += (ii.unit_price * ii.quantity)
       else
-        # ii.bulk_discount = bd but make it a method on ii
         revenue += ((ii.unit_price * ii.quantity) * bd.discount_calculator)
       end
     end
     revenue
   end
+
+  # def total_discount_two
+    
+  # end
 end
