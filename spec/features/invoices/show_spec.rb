@@ -119,4 +119,10 @@ RSpec.describe 'invoices show' do
 
     expect(current_path).to eq(merchant_bulk_discount_path(@merchant1, @bd_2))
   end
+
+  it "doesn't link when no qualifying bulk discounts" do
+    visit merchant_invoice_path(@merchant1, @invoice_5)
+
+    expect(page).to_not have_content("Hair tie's Discount")
+  end
 end
