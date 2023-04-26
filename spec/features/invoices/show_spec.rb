@@ -49,8 +49,14 @@ RSpec.describe 'invoices show' do
     @transaction4 = Transaction.create!(credit_card_number: 230429, result: 1, invoice_id: @invoice_4.id)
     @transaction5 = Transaction.create!(credit_card_number: 102938, result: 1, invoice_id: @invoice_5.id)
     @transaction6 = Transaction.create!(credit_card_number: 879799, result: 0, invoice_id: @invoice_6.id)
-    @transaction7 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_7.id)
+    @transaction7 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_7.id)  
     @transaction8 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_8.id)
+  
+    @bd_1 = @merchant1.bulk_discounts.create(name: "10% for 5", quantity_threshold: 5, percentage_discount: 10)
+    @bd_2 = @merchant1.bulk_discounts.create(name: "15% for 8", quantity_threshold: 8, percentage_discount: 15)
+    @bd_3 = @merchant1.bulk_discounts.create(name: "30% for 10", quantity_threshold: 10, percentage_discount: 30)
+    @bd_4 = @merchant1.bulk_discounts.create(name: "50% for 10", quantity_threshold: 10, percentage_discount: 50)
+    @bd_5 = @merchant1.bulk_discounts.create(name: "60% for 15", quantity_threshold: 15, percentage_discount: 60)
   end
 
   it "shows the invoice information" do
@@ -100,4 +106,23 @@ RSpec.describe 'invoices show' do
      end
   end
 
+  it 'has the total discounted revenue from this invoice' do
+    visit merchant_invoice_path(@merchant1, @invoice_1)
+
+    expect(page).to have_content(@invoice_1.total_discounted_revenue)
+  end
+
+  it 'links to discount revenue' do
+    visit merchant_invoice_path(@merchant1, @invoice_1)
+
+    click_link "#{@item_1.name}'s Discount"
+
+    expect(current_path).to eq(merchant_bulk_discount_path(@merchant1, @bd_2))
+  end
+
+  it "doesn't link when no qualifying bulk discounts" do
+    visit merchant_invoice_path(@merchant1, @invoice_5)
+
+    expect(page).to_not have_content("Hair tie's Discount")
+  end
 end

@@ -140,6 +140,11 @@ describe Merchant do
       @transaction7 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_7.id)
       @transaction7 = Transaction.create!(credit_card_number: 203942, result: 1, invoice_id: @invoice_8.id)
 
+      @bd_1 = @merchant1.bulk_discounts.create(name: "10% for 5", quantity_threshold: 5, percentage_discount: 10)
+      @bd_2 = @merchant1.bulk_discounts.create(name: "15% for 8", quantity_threshold: 8, percentage_discount: 15)
+      @bd_3 = @merchant1.bulk_discounts.create(name: "30% for 10", quantity_threshold: 10, percentage_discount: 30)
+      @bd_4 = @merchant1.bulk_discounts.create(name: "50% for 10", quantity_threshold: 10, percentage_discount: 50)
+      @bd_5 = @merchant1.bulk_discounts.create(name: "60% for 15", quantity_threshold: 15, percentage_discount: 60)
     end
     it "can list items ready to ship" do
       expect(@merchant1.ordered_items_to_ship).to eq([@item_1, @item_1, @item_3, @item_4, @item_7, @item_8, @item_4, @item_4])
@@ -158,6 +163,20 @@ describe Merchant do
 
     it "best_day" do
       expect(@merchant1.best_day).to eq(@invoice_8.created_at.to_date)
+    end
+
+    describe "#highest_qualifying_discount" do
+      it 'highest_qualifying_discount' do
+        expect(@merchant1.highest_qualifying_discount(10)).to eq(@bd_4)
+      end
+  
+      it 'takes invoice item quantity as argument' do
+        expect(@merchant1.highest_qualifying_discount(@ii_1.quantity)).to eq(@bd_2)
+      end
+
+      it 'fails to pull discount when none qualifies' do
+        expect(@merchant1.highest_qualifying_discount(1)).to eq(nil)
+      end
     end
   end
 end
